@@ -1,0 +1,141 @@
+# ==================================================
+# SISTEM ANTRIAN BENGKEL MOTOR - FINAL VERSION
+# ==================================================
+
+class Pelanggan:
+    def __init__(self, no, nama, servis):
+        self.no = no
+        self.nama = nama
+        self.servis = servis
+        self.next = None
+
+
+class QueueBengkel:
+    def __init__(self):
+        self.front = None
+        self.rear = None
+        self.nomor_otomatis = 1
+        self.jumlah = 0
+        self.riwayat = []
+
+    # ==========================
+    # Tambah pelanggan
+    # ==========================
+    def enqueue(self, nama, servis):
+        if nama.strip() == "":
+            print("Nama tidak boleh kosong!")
+            return
+
+        baru = Pelanggan(self.nomor_otomatis, nama, servis)
+        self.nomor_otomatis += 1
+
+        if self.front is None:
+            self.front = self.rear = baru
+        else:
+            self.rear.next = baru
+            self.rear = baru
+
+        self.jumlah += 1
+        print("✅ Pelanggan masuk antrian")
+
+    # ==========================
+    # Layani pelanggan
+    # ==========================
+    def dequeue(self):
+        if self.front is None:
+            print("⚠️ Antrian kosong")
+            return
+
+        layani = self.front
+        self.front = self.front.next
+
+        if self.front is None:
+            self.rear = None
+
+        self.jumlah -= 1
+        self.riwayat.append(layani.nama)
+
+        print(f"🔧 Melayani {layani.nama} ({layani.servis})")
+
+    # ==========================
+    # Lihat antrian
+    # ==========================
+    def tampilkan(self):
+        if self.front is None:
+            print("Antrian kosong")
+            return
+
+        print("\n=== DAFTAR ANTRIAN ===")
+        print(f"{'No':<5}{'Nama':<15}{'Servis':<15}")
+
+        bantu = self.front
+        while bantu:
+            print(f"{bantu.no:<5}{bantu.nama:<15}{bantu.servis:<15}")
+            bantu = bantu.next
+
+        print(f"\nTotal Antrian: {self.jumlah}")
+
+    # ==========================
+    # Peek
+    # ==========================
+    def peek(self):
+        if self.front:
+            print(f"Pelanggan berikutnya: {self.front.nama}")
+        else:
+            print("Antrian kosong")
+
+    # ==========================
+    # Riwayat
+    # ==========================
+    def tampilkan_riwayat(self):
+        print("\n=== RIWAYAT SERVIS ===")
+        if not self.riwayat:
+            print("Belum ada servis")
+        else:
+            for i, nama in enumerate(self.riwayat, 1):
+                print(f"{i}. {nama}")
+
+
+# ==========================
+# MAIN PROGRAM
+# ==========================
+def main():
+    q = QueueBengkel()
+
+    while True:
+        print("\n=== SISTEM ANTRIAN BENGKEL ===")
+        print("1. Tambah Pelanggan")
+        print("2. Layani Pelanggan")
+        print("3. Lihat Antrian")
+        print("4. Pelanggan Berikutnya")
+        print("5. Riwayat Servis")
+        print("6. Keluar")
+
+        pilih = input("Pilih menu: ")
+
+        if pilih == "1":
+            nama = input("Nama : ")
+            servis = input("Jenis Servis : ")
+            q.enqueue(nama, servis)
+
+        elif pilih == "2":
+            q.dequeue()
+
+        elif pilih == "3":
+            q.tampilkan()
+
+        elif pilih == "4":
+            q.peek()
+
+        elif pilih == "5":
+            q.tampilkan_riwayat()
+
+        elif pilih == "6":
+            print("Program selesai.")
+            break
+        else:
+            print("Pilihan tidak valid")
+
+
+if __name__ == "__main__":
+    main()
