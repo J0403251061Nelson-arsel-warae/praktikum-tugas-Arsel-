@@ -1,0 +1,94 @@
+# Nama : Nelson Arsel Warae
+# NIM : J0403251061
+# Kelas : B2
+# Praktikum 13 - Graph III: Spanning Tree
+
+
+# ==========================================================
+# Implementasi Algoritma Prim
+# ==========================================================
+
+import heapq
+
+graph = {
+    'A': {'B': 4, 'C': 2, 'D': 5},
+    'B': {'A': 4, 'D': 3},
+    'C': {'A': 2, 'D': 1},
+    'D': {'A': 5, 'B': 3, 'C': 1}
+}
+
+def prim(graph, start):
+
+    visited = set([start])
+
+    edges = []
+
+    # Menambahkan edge dari node awal
+    for neighbor, weight in graph[start].items():
+        heapq.heappush(edges, (weight, start, neighbor))
+
+    mst = []
+    total_weight = 0
+
+    while edges:
+
+        weight, u, v = heapq.heappop(edges)
+
+        if v not in visited:
+
+            visited.add(v)
+
+            mst.append((u, v, weight))
+
+            total_weight += weight
+
+            # Menambahkan edge baru dari node yang dipilih
+            for neighbor, w in graph[v].items():
+
+                if neighbor not in visited:
+                    heapq.heappush(edges, (w, v, neighbor))
+
+    return mst, total_weight
+
+
+mst, total = prim(graph, 'A')
+
+print("Minimum Spanning Tree:")
+
+for edge in mst:
+    print(edge)
+
+print("Total bobot =", total)
+
+
+# ==========================================================
+# Jawaban Analisis
+# ==========================================================
+
+# 1. Node awal apa yang digunakan?
+# Jawab:
+# Node awal yang digunakan adalah node 'A'.
+
+# 2. Edge mana yang dipilih pertama kali?
+# Jawab:
+# Edge pertama yang dipilih adalah ('A', 'C')
+# dengan bobot 2 karena memiliki bobot terkecil
+# dari node awal.
+
+# 3. Bagaimana Prim menentukan edge berikutnya?
+# Jawab:
+# Prim memilih edge dengan bobot terkecil
+# yang terhubung ke node yang sudah dikunjungi
+# dan menuju node yang belum dikunjungi.
+
+# 4. Berapa total bobot MST yang dihasilkan?
+# Jawab:
+# Total bobot MST yang dihasilkan adalah 6.
+
+# 5. Apa perbedaan pendekatan Prim dan Kruskal?
+# Jawab:
+# Prim membangun MST mulai dari satu node
+# lalu menambahkan edge terdekat secara bertahap.
+# Sedangkan Kruskal memilih edge dari bobot
+# terkecil di seluruh graph tanpa memulai
+# dari node tertentu.
